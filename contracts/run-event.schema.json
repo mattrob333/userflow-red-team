@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "UserFlow run event envelope v1",
+  "description": "Envelope only. Payload-specific validation, authorization, references and redaction remain required.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion","eventId","workspaceId","runId","attemptId","sequence","occurredAt","type","payload"],
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "eventId": {"type": "string","minLength": 1,"maxLength": 128},
+    "workspaceId": {"type": "string","minLength": 1,"maxLength": 128},
+    "runId": {"type": "string","minLength": 1,"maxLength": 128},
+    "attemptId": {"type": "string","minLength": 1,"maxLength": 128},
+    "agentExecutionId": {"type": "string","minLength": 1,"maxLength": 128},
+    "parentInvocationId": {"type": "string","minLength": 1,"maxLength": 128},
+    "sequence": {"type": "integer","minimum": 1},
+    "occurredAt": {"type": "string","format": "date-time"},
+    "type": {"enum": ["run.created","run.state.changed","run.finished","agent.created","agent.state.changed","agent.finished","tool.started","tool.completed","tool.failed","journey.started","journey.finished","operator.challenge.created","operator.challenge.resolved","operator.challenge.expired","evidence.created","finding.created","finding.updated","report.ready"]},
+    "payload": {"type": "object","description": "Implement discriminated payload schemas before accepting live events."}
+  }
+}
