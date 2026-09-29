@@ -1,0 +1,15 @@
+# Paste this into Claude Code or Codex when ready to build
+
+You are continuing UserFlow Red Team from this repository. Start by inspecting the actual checkout and reading README.md, AGENTS.md, docs/START_HERE.md, docs/DESIGN_INTEGRATION.md, docs/BACKEND_RUNTIME.md, docs/PRODUCT_SPEC.md, docs/DATA_AND_EVENTS.md, docs/HARNESS_ARCHITECTURE.md, docs/BUILD_PLAN.md, and SECURITY.md.
+
+This is a design-and-build foundation, not a working SaaS. The three original Claude Design exports are under design/claude-design/. They depend on support.js and data.js, which were not supplied at consolidation. Preserve original bytes and hashes. Recover those files from a complete export or explicitly port the design to React/TypeScript with new labeled fixtures. Never claim newly created mocks are original recovered files.
+
+The backend decision is mandatory: TypeScript Claude Agent SDK, with claude-opus-5-5 explicitly selected for the coordinator and every persona/specialist subagent. Use API-based authentication and do not rely on customers' Claude Pro/Max sessions. Codex is a possible future adapter, not the default backend even if you are Codex implementing it. Check the current official SDK/model documentation and pin an installed SDK version before using it. The existing runtime helper only generates definitions and makes no provider calls.
+
+Product loop: connect source/runtime separately; require the owner's description; analyze with limited authorized reconnaissance; draft/edit personas and journeys; approve an immutable plan; Run Plan; show actual subagent/browser events in the Agent Run Graph; open the half-screen structured Findings Canvas; compile an evidence-backed report; explicitly generate improvement workstreams; export USERFLOW_REMEDIATION_PLAN.md and JSON; only later authorize scoped branch remediation and same-plan retest. Never silently edit the default branch or merge.
+
+First run npm test, npm run check, and npm run inspect:design. Report the actual baseline and blockers. Work on the first unfinished milestone in docs/BUILD_PLAN.md. Implement a small vertical slice rather than scattering fake endpoints across every screen. Keep Demo Mode separate from live operation. Do not accept real keys or execute untrusted uploads until isolation, policy, and redaction exist. Ask before paid model calls or cloud deployment.
+
+Preserve the dark design, electric-blue active graph paths, agent inspector, and right-hand findings canvas. Every visible metric/status must come from scoped data. Model progress is observable actions and state, not hidden reasoning. Missing evidence remains unknown; untested is not passed; a diff is not proof of resolution.
+
+At completion, provide exact changed files, commands and tests, real versus mocked functionality, remaining blockers, and commit. Update docs/START_HERE.md, docs/BUILD_PLAN.md, and docs/VALIDATION.md so another developer can resume without this chat.
