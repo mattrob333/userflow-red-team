@@ -212,20 +212,17 @@ The first real success target is intentionally small: an operator supplies one s
 
 [Build plan and acceptance gates](docs/BUILD_PLAN.md) includes failure paths, dependencies, security requirements, and a first-session checklist. Do not build all 16 screens against fake endpoints and call that the MVP.
 
-## Publishing and sharing
+## Repository and sharing
 
-The prepared local Git history is preserved. Remote creation/push has **not** been verified from this chat. The intended repository name is `mattrob333/userflow-red-team`.
+The canonical repository is:
 
-From an authenticated developer machine, use the included publisher, which defaults to private and refuses to overwrite an existing repository:
+**https://github.com/mattrob333/userflow-red-team**
 
-```bash
-gh auth login
-node scripts/publish-github.mjs --owner mattrob333 --name userflow-red-team --private
-```
+The repository has been published and the current foundation is on `main`. Before a real hosted build begins, clone this repository and start with `docs/START_HERE.md` and `docs/BUILD_PLAN.md`.
 
-It verifies the authenticated owner, validates this package, commits only this package if Git was not already initialized, and asks GitHub CLI to create and push. It stops rather than force-pushing or repurposing an existing repo. Prerequisites and recovery commands are in [GitHub publishing](docs/GITHUB_PUBLISHING.md), based on [GitHub CLI's repository-create command](https://cli.github.com/manual/gh_repo_create).
+No open-source license has been selected for the assembled product. The original pipeline component's redistribution license is not supplied. If the repository will remain private, no additional sharing setup is required. If it will be shared publicly later, first choose a license and review third-party asset/component provenance. No font binaries are bundled.
 
-No open-source license has been selected for the assembled product. The original pipeline component's redistribution license is not supplied. Keep the repository private until the owner chooses licensing and checks third-party asset provenance. No font binaries are bundled.
+The included `scripts/publish-github.mjs` is now primarily a recovery/republishing helper for another repository; it should not be used to overwrite this existing canonical repo.
 
 ## Returning later
 
