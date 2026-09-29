@@ -1,0 +1,12 @@
+{
+  "mode": "synthetic-contract-example-not-a-real-audit",
+  "events": [
+    {"schemaVersion":1,"eventId":"demo-event-001","workspaceId":"demo-workspace","runId":"demo-run","attemptId":"demo-attempt","sequence":1,"occurredAt":"2026-09-28T14:00:01.000Z","type":"run.created","payload":{"state":"queued","synthetic":true}},
+    {"schemaVersion":1,"eventId":"demo-event-002","workspaceId":"demo-workspace","runId":"demo-run","attemptId":"demo-attempt","sequence":2,"occurredAt":"2026-09-28T14:00:02.000Z","type":"agent.created","payload":{"personaId":"A01","requestedModel":"claude-opus-5-5"},"agentExecutionId":"demo-execution-A01"},
+    {"schemaVersion":1,"eventId":"demo-event-003","workspaceId":"demo-workspace","runId":"demo-run","attemptId":"demo-attempt","sequence":3,"occurredAt":"2026-09-28T14:00:03.000Z","type":"agent.state.changed","payload":{"state":"running","summary":"Demo: opening fixture page"},"agentExecutionId":"demo-execution-A01"},
+    {"schemaVersion":1,"eventId":"demo-event-004","workspaceId":"demo-workspace","runId":"demo-run","attemptId":"demo-attempt","sequence":4,"occurredAt":"2026-09-28T14:00:04.000Z","type":"journey.started","payload":{"journeyId":"A01-J1"},"agentExecutionId":"demo-execution-A01"},
+    {"schemaVersion":1,"eventId":"demo-event-005","workspaceId":"demo-workspace","runId":"demo-run","attemptId":"demo-attempt","sequence":5,"occurredAt":"2026-09-28T14:00:05.000Z","type":"journey.finished","payload":{"journeyId":"A01-J1","outcome":"untested","reason":"Synthetic fixture only; no browser was launched"},"agentExecutionId":"demo-execution-A01"},
+    {"schemaVersion":1,"eventId":"demo-event-006","workspaceId":"demo-workspace","runId":"demo-run","attemptId":"demo-attempt","sequence":6,"occurredAt":"2026-09-28T14:00:06.000Z","type":"agent.finished","payload":{"state":"partial"},"agentExecutionId":"demo-execution-A01"},
+    {"schemaVersion":1,"eventId":"demo-event-007","workspaceId":"demo-workspace","runId":"demo-run","attemptId":"demo-attempt","sequence":7,"occurredAt":"2026-09-28T14:00:07.000Z","type":"run.finished","payload":{"state":"completed","coverageState":"partial","synthetic":true}}
+  ]
+}
