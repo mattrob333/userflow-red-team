@@ -1,0 +1,16 @@
+{
+  "name": "userflow-red-team-foundation",
+  "version": "2.2.0",
+  "private": true,
+  "description": "UserFlow testing toolkit, preserved design sources, and Claude Agent SDK build foundation. Not a hosted app.",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test",
+    "check": "node scripts/check.mjs",
+    "check:strict": "node scripts/check.mjs --strict-design",
+    "inspect:design": "node scripts/inspect-design.mjs"
+  }
+}
