@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+@keyframes ufrTick { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
+@keyframes ufrPop { 0% { transform: scale(1.12); } 100% { transform: scale(1); } }
+</style>
+</helmet>
+<div style="background:#090909; border:1px solid rgba(255,255,255,0.08); border-radius:14px; overflow:hidden; font-family:'Geist',system-ui,sans-serif; display:flex; flex-direction:column; min-width:0; width:100%; box-sizing:border-box;">
+  <sc-if value="{{ showHeader }}" hint-placeholder-val="{{ true }}">
+    <div style="padding:10px 16px; border-bottom:1px solid rgba(255,255,255,0.06); display:flex; align-items:center; justify-content:space-between; gap:12px; min-height:22px;">
+      <div style="display:flex; align-items:center; gap:8px; flex:none;">
+        {{ liveDot }}
+        <span style="font-family:'Geist Mono',monospace; font-size:10.5px; letter-spacing:0.1em; color:rgba(255,255,255,0.55); white-space:nowrap;">{{ title }}</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:12px; min-width:0;">
+        <span style="font-family:'Geist Mono',monospace; font-size:10.5px; color:rgba(255,255,255,0.4); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0;">{{ headerRight }}</span>
+        <sc-if value="{{ showControls }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex; gap:2px; border:1px solid rgba(255,255,255,0.08); border-radius:7px; padding:2px;">
+            <button onClick="{{ zoomOut }}" title="Zoom out" style="all:unset; cursor:pointer; font-family:'Geist Mono',monospace; font-size:11px; color:rgba(255,255,255,0.6); padding:2px 8px; border-radius:5px;" style-hover="background:rgba(255,255,255,0.06); color:#fff;">−</button>
+            <button onClick="{{ zoomIn }}" title="Zoom in" style="all:unset; cursor:pointer; font-family:'Geist Mono',monospace; font-size:11px; color:rgba(255,255,255,0.6); padding:2px 8px; border-radius:5px;" style-hover="background:rgba(255,255,255,0.06); color:#fff;">+</button>
+            <button onClick="{{ fit }}" title="Fit to screen" style="all:unset; cursor:pointer; font-family:'Geist Mono',monospace; font-size:10px; letter-spacing:0.06em; color:rgba(255,255,255,0.6); padding:2px 8px; border-radius:5px;" style-hover="background:rgba(255,255,255,0.06); color:#fff;">FIT</button>
+            <button onClick="{{ focus }}" title="Focus selected agent" style="all:unset; cursor:pointer; font-family:'Geist Mono',monospace; font-size:10px; letter-spacing:0.06em; color:{{ focusColor }}; padding:2px 8px; border-radius:5px;" style-hover="background:rgba(255,255,255,0.06);">FOCUS</button>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </sc-if>
+  <div ref="{{ wrapRef }}" onMouseDown="{{ onDown }}" onMouseMove="{{ onMove }}" onMouseUp="{{ onUp }}" onMouseLeave="{{ onUp }}" onWheel="{{ onWheel }}" style="position:relative; height:{{ viewH }}px; overflow:hidden; cursor:{{ cursor }}; user-select:none;">
+    <div style="position:absolute; left:0; top:0; width:{{ W }}px; height:{{ H }}px; transform:{{ transform }}; transform-origin:0 0; transition:{{ tx }};">
+      {{ edgeLayer }}
+      <sc-for list="{{ nodes }}" as="n" hint-placeholder-count="3">
+        <div onClick="{{ n.onClick }}" title="{{ n.title }}" style="position:absolute; left:{{ n.x }}px; top:{{ n.y }}px; width:{{ n.w }}px; height:{{ n.h }}px; box-sizing:border-box; border-radius:{{ n.r }}px; background:{{ n.bg }}; border:1px solid {{ n.border }}; opacity:{{ n.op }}; box-shadow:{{ n.shadow }}; cursor:{{ n.cursor }}; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:2px; padding:0 8px; transition:border-color .45s, background .45s, opacity .35s, box-shadow .25s;">
+          <sc-if value="{{ n.accent }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute; top:-1px; left:14px; right:14px; height:1px; background:rgba(51,117,255,0.75);"></div>
+          </sc-if>
+          <sc-if value="{{ n.isChips }}" hint-placeholder-val="{{ false }}">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:4px; width:100%;">
+              <sc-for list="{{ n.chips }}" as="c" hint-placeholder-count="2">
+                <div style="height:17px; border-radius:5px; border:1px solid {{ c.border }}; background:{{ c.bg }}; color:{{ c.color }}; font-family:'Geist Mono',monospace; font-size:9.5px; line-height:17px; text-align:center; transition:all .4s;">{{ c.name }}</div>
+              </sc-for>
+            </div>
+          </sc-if>
+          <sc-if value="{{ n.isBox }}" hint-placeholder-val="{{ true }}">
+            <sc-if value="{{ n.eyebrow }}" hint-placeholder-val="{{ true }}">
+              <div style="font-size:9px; letter-spacing:0.08em; color:{{ n.ebColor }}; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%; font-weight:500;">{{ n.eyebrow }}</div>
+            </sc-if>
+            <div style="font-size:{{ n.labelSize }}px; color:{{ n.labelColor }}; font-weight:{{ n.labelWeight }}; font-family:{{ n.labelFont }}; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%; line-height:1.2;">{{ n.label }}</div>
+            <sc-if value="{{ n.dotsGap }}" hint-placeholder-val="{{ false }}"><div style="height:12px;"></div></sc-if>
+            <sc-if value="{{ n.meta }}" hint-placeholder-val="{{ false }}">
+              <div style="font-family:'Geist Mono',monospace; font-size:9px; color:{{ n.metaColor }}; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%;">{{ n.meta }}</div>
+            </sc-if>
+          </sc-if>
+        </div>
+      </sc-for>
+      {{ overlayLayer }}
+    </div>
+  </div>
+  <sc-if value="{{ showTicker }}" hint-placeholder-val="{{ true }}">
+    <div style="border-top:1px solid rgba(255,255,255,0.06); padding:9px 16px; height:34px; box-sizing:border-box; display:flex; gap:8px; align-items:center; overflow:hidden;">
+      <span style="color:rgba(51,117,255,0.8); font-family:'Geist Mono',monospace; font-size:13px; line-height:1;">›</span>
+      <div style="position:relative; flex:1; min-width:0; height:16px; overflow:hidden;">{{ tickerEl }}</div>
+    </div>
+  </sc-if>
+  <sc-if value="{{ showFooter }}" hint-placeholder-val="{{ true }}">
+    <div style="border-top:1px solid rgba(255,255,255,0.06); padding:10px 16px; display:flex; gap:22px; align-items:center; flex-wrap:wrap; row-gap:8px;">
+      <sc-for list="{{ metricsView }}" as="m" hint-placeholder-count="5">
+        <div style="min-width:0;">
+          <div style="font-size:9px; color:rgba(255,255,255,0.4); letter-spacing:0.09em; margin-bottom:3px; white-space:nowrap;">{{ m.label }}</div>
+          <div style="font-size:15px; color:{{ m.color }}; font-family:'Geist Mono',monospace; white-space:nowrap;">{{ m.value }}</div>
+        </div>
+      </sc-for>
+      <div style="margin-left:auto; display:flex; gap:22px;">
+        <sc-for list="{{ metricsRight }}" as="m" hint-placeholder-count="2">
+          <div style="text-align:right;">
+            <div style="font-size:9px; color:rgba(255,255,255,0.4); letter-spacing:0.09em; margin-bottom:3px; white-space:nowrap;">{{ m.label }}</div>
+            <div style="font-size:10.5px; color:rgba(90,140,255,0.85); font-family:'Geist Mono',monospace; white-space:nowrap;">{{ m.value }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1100,&quot;height&quot;:520},&quot;nodes&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;GraphNode[]&quot;},&quot;edges&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;GraphEdge[]&quot;},&quot;width&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:1080,&quot;tsType&quot;:&quot;number&quot;},&quot;height&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:392,&quot;tsType&quot;:&quot;number&quot;},&quot;title&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;AGENT RUN GRAPH · LIVE&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;headerRight&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;live&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;animate&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;showControls&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;showHeader&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;ticker&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;{id,text,agent,time,tone}&quot;},&quot;metrics&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;{label,value,tone}[]&quot;},&quot;metricsRight&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;{label,value}[]&quot;},&quot;selectedId&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;string&quot;},&quot;onSelect&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;(id,node)=&gt;void&quot;},&quot;dimFn&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;(node)=&gt;boolean&quot;},&quot;maxHeight&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;tsType&quot;:&quot;number&quot;},&quot;minScale&quot;:{&quot;editor&quot;:&quot;float&quot;,&quot;tsType&quot;:&quot;number&quot;},&quot;maxScale&quot;:{&quot;editor&quot;:&quot;float&quot;,&quot;tsType&quot;:&quot;number&quot;}}">
+const BLUE = '#0052FF', GREEN = '#22c55e', AMBER = '#f59e0b', RED = '#ef4444';
+const NODE = {
+  queued:   { bg: '#0f0f0f', border: 'rgba(255,255,255,0.07)', eb: 'rgba(255,255,255,0.34)', label: 'rgba(255,255,255,0.5)', meta: 'rgba(255,255,255,0.3)', dot: 'rgba(255,255,255,0.18)' },
+  booting:  { bg: '#0a0e17', border: 'rgba(0,82,255,0.45)', eb: 'rgba(90,140,255,0.7)', label: 'rgba(255,255,255,0.8)', meta: 'rgba(120,160,255,0.55)', dot: BLUE, pulse: 1.6 },
+  running:  { bg: '#050D1C', border: BLUE, eb: 'rgba(90,140,255,0.9)', label: '#fff', meta: 'rgba(120,160,255,0.75)', dot: BLUE, pulse: 1.2, accent: true },
+  waiting:  { bg: '#140f06', border: 'rgba(245,158,11,0.55)', eb: 'rgba(245,170,50,0.9)', label: 'rgba(255,255,255,0.88)', meta: 'rgba(245,170,50,0.75)', dot: AMBER, pulse: 1.9 },
+  complete: { bg: '#141414', border: 'rgba(255,255,255,0.1)', eb: 'rgba(255,255,255,0.42)', label: 'rgba(255,255,255,0.85)', meta: 'rgba(255,255,255,0.38)', dot: GREEN },
+  partial:  { bg: '#141414', border: 'rgba(245,158,11,0.3)', eb: 'rgba(245,170,50,0.75)', label: 'rgba(255,255,255,0.85)', meta: 'rgba(255,255,255,0.4)', dot: AMBER },
+  failed:   { bg: '#160808', border: 'rgba(239,68,68,0.6)', eb: 'rgba(248,113,113,0.95)', label: 'rgba(255,255,255,0.9)', meta: 'rgba(248,113,113,0.8)', dot: RED, pulse: 1.4 },
+};
+const EDGE = {
+  queued:   { stroke: 'rgba(255,255,255,0.12)', dash: '3 5', marker: 'q' },
+  active:   { stroke: 'rgba(0,82,255,0.5)', dash: '3 5', marker: 'a' },
+  complete: { stroke: 'rgba(255,255,255,0.17)', dash: null, marker: 'c' },
+  waiting:  { stroke: 'rgba(245,158,11,0.7)', dash: '3 5', marker: 'w' },
+  failed:   { stroke: 'rgba(239,68,68,0.7)', dash: null, marker: 'f' },
+};
+const MK = { q: 'rgba(255,255,255,0.22)', a: 'rgba(51,117,255,0.75)', c: 'rgba(255,255,255,0.3)', w: 'rgba(245,158,11,0.8)', f: 'rgba(239,68,68,0.85)' };
+
+class Component extends DCLogic {
+  state = { cw: 0, zoom: 1, px: 0, py: 0, drag: null };
+  wrapRef = React.createRef();
+  uid = 'g' + Math.random().toString(36).slice(2, 7);
+  componentDidMount() {
+    const el = this.wrapRef.current; if (!el) return;
+    this.ro = new ResizeObserver(() => { const w = el.clientWidth; if (Math.abs(w - this.state.cw) > 1) this.setState({ cw: w }); });
+    this.ro.observe(el); this.setState({ cw: el.clientWidth });
+  }
+  componentWillUnmount() { this.ro && this.ro.disconnect(); }
+  dims() { return { W: this.props.width || 1080, H: this.props.height || 392 }; }
+  base() {
+    const { W, H } = this.dims(); const cw = this.state.cw || W;
+    let s = cw / W; if (this.props.maxHeight) s = Math.min(s, this.props.maxHeight / H);
+    return Math.max(this.props.minScale ?? 0.45, Math.min(this.props.maxScale ?? 1.25, s));
+  }
+  edgePath(e, map) {
+    const a = map[e.source], b = map[e.target]; if (!a || !b) return null;
+    if (e.vertical) { const x = a.x + a.w / 2; return `M${x},${a.y + a.h} L${x},${b.y - 5}`; }
+    const x1 = a.x + a.w, y1 = a.y + a.h / 2 + (e.fromDy || 0), x2 = b.x - 5, y2 = b.y + b.h / 2;
+    if (e.route === 'bus') {
+      const bx = e.busX, r = 6; if (Math.abs(y1 - y2) < 1) return `M${x1},${y1} L${x2},${y2}`;
+      const dir = y2 < y1 ? -1 : 1;
+      return `M${x1},${y1} L${bx - r},${y1} Q${bx},${y1} ${bx},${y1 + dir * r} L${bx},${y2 - dir * r} Q${bx},${y2} ${bx + r},${y2} L${x2},${y2}`;
+    }
+    if (Math.abs(y1 - y2) < 1) return `M${x1},${y1} L${x2},${y2}`;
+    const mx = x1 + (x2 - x1) * 0.5;
+    return `M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`;
+  }
+  approxLen(d) { const n = d.match(/-?\d+(\.\d+)?/g).map(Number); let L = 0; for (let i = 2; i + 1 < n.length; i += 2) L += Math.hypot(n[i] - n[i - 2], n[i + 1] - n[i - 1]); return L || 60; }
+  renderVals() {
+    const h = React.createElement;
+    const p = this.props; const { W, H } = this.dims();
+    const nodesIn = p.nodes || []; const edgesIn = p.edges || [];
+    const animate = p.animate !== false;
+    const map = {}; nodesIn.forEach(n => { map[n.id] = n; });
+    const s0 = this.base(); const s = s0 * this.state.zoom; const cw = this.state.cw || W * s0;
+    const viewH = Math.round(H * s0);
+    let px = this.state.px, py = this.state.py;
+    if (this.state.zoom === 1) { px = Math.max(0, (cw - W * s0) / 2); py = 0; }
+    const sel = p.selectedId;
+    const uid = this.uid;
+    const markers = h('defs', null, ...Object.entries(MK).map(([k, c]) => h('marker', { key: k, id: `${uid}-m${k}`, viewBox: '0 0 10 10', refX: 8, refY: 5, markerWidth: 5, markerHeight: 5, orient: 'auto' },
+      h('path', { d: 'M2 1.5L7.5 5L2 8.5', fill: 'none', stroke: c, strokeWidth: 1.6, strokeLinecap: 'round', strokeLinejoin: 'round' }))));
+    const edgeEls = edgesIn.map(e => {
+      const d = this.edgePath(e, map); if (!d) return null;
+      const st = EDGE[e.status] || EDGE.queued; const dim = p.dimFn && (p.dimFn(map[e.source]) || p.dimFn(map[e.target]));
+      const kids = [];
+      if (e.status === 'waiting') kids.push(h('animate', { key: 'w', attributeName: 'stroke-opacity', values: '0.25;1;0.25', dur: '1.9s', repeatCount: 'indefinite' }));
+      const path = h('path', { key: 'p', d, fill: 'none', stroke: st.stroke, strokeWidth: 1.5, strokeDasharray: st.dash || undefined, markerEnd: `url(#${uid}-m${st.marker})` }, ...kids);
+      const dots = [];
+      if (animate && e.status === 'active') {
+        const dur = Math.max(0.8, Math.min(2.4, this.approxLen(d) / 95)) / (e.speed || 1);
+        [[0, 2.5, 1], [0.34, 1.8, 0.65], [0.67, 1.3, 0.35]].forEach(([f, r, o], i) => dots.push(
+          h('circle', { key: 'd' + i + d, r, fill: BLUE, opacity: o }, h('animateMotion', { dur: dur.toFixed(2) + 's', repeatCount: 'indefinite', begin: `-${(f * dur).toFixed(2)}s`, path: d }))));
+      }
+      return h('g', { key: e.id, opacity: dim ? 0.2 : 1, style: { transition: 'opacity .3s' } }, path, ...dots);
+    });
+    const edgeLayer = h('svg', { width: W, height: H, style: { position: 'absolute', left: 0, top: 0, overflow: 'visible', pointerEvents: 'none' } }, markers, ...edgeEls);
+    const nodes = nodesIn.map(n => {
+      const st = NODE[n.status] || NODE.queued;
+      const isChips = n.kind === 'tools';
+      const selected = sel && (sel === n.id || (n.agentId && sel === 'ag-' + n.agentId && n.kind === 'agent'));
+      const dim = p.dimFn ? p.dimFn(n) : false;
+      const big = n.kind === 'orchestrator';
+      const isFind = n.kind === 'finding';
+      return {
+        ...n, isChips, isBox: !isChips, accent: !isChips && !!st.accent,
+        r: big ? 10 : isChips ? 0 : n.h <= 40 ? 7 : 8,
+        bg: isChips ? 'transparent' : st.bg,
+        border: isChips ? 'transparent' : (isFind && n.critical && n.status !== 'queued') ? 'rgba(239,68,68,0.5)' : st.border,
+        op: dim ? 0.22 : 1,
+        shadow: selected ? '0 0 0 2px #090909, 0 0 0 3px rgba(255,255,255,0.6)' : (n.status === 'running' && !isChips) ? '0 0 0 3px rgba(0,82,255,0.08)' : 'none',
+        cursor: p.onSelect ? 'pointer' : 'default',
+        onClick: (ev) => { if (this.dragged) return; ev && ev.stopPropagation && ev.stopPropagation(); p.onSelect && p.onSelect(n.id, n); },
+        ebColor: st.eb, labelColor: st.label, metaColor: st.meta,
+        labelSize: isFind ? 15 : big ? 13 : n.single ? 11 : 12,
+        labelWeight: big || n.status === 'running' ? 500 : 400,
+        labelFont: isFind ? "'Geist Mono',monospace" : "'Geist',system-ui,sans-serif",
+        dotsGap: big && (n.status === 'running' || n.status === 'booting'),
+        eyebrow: n.eyebrow || '', meta: n.compact || n.single ? '' : (n.meta || ''),
+        title: n.label,
+        chips: (n.chips || []).map(c => ({ name: c.name,
+          border: c.state === 'active' ? BLUE : c.state === 'queued' ? 'rgba(255,255,255,0.07)' : 'rgba(255,255,255,0.12)',
+          bg: c.state === 'active' ? '#050D1C' : '#111', color: c.state === 'active' ? 'rgba(140,175,255,1)' : c.state === 'queued' ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.62)' })),
+      };
+    });
+    const ov = [];
+    nodesIn.forEach(n => {
+      if (n.kind === 'tools') return;
+      const st = NODE[n.status] || NODE.queued; const cx = n.x + n.w - 9, cy = n.y + 9;
+      const color = (n.kind === 'finding' && n.critical) ? RED : st.dot;
+      const pulse = animate && st.pulse;
+      ov.push(h('circle', { key: 'sd-' + n.id + (pulse ? 'p' : ''), cx, cy, r: n.h <= 40 ? 2.5 : 3, fill: color, opacity: pulse ? 1 : 0.95 },
+        pulse ? h('animate', { attributeName: 'opacity', values: '0.3;1;0.3', dur: st.pulse + 's', repeatCount: 'indefinite' }) : null));
+      if (n.kind === 'orchestrator' && (n.status === 'running' || n.status === 'booting')) {
+        [-12, 0, 12].forEach((dx, i) => ov.push(h('circle', { key: 'od' + i + n.id, cx: n.x + n.w / 2 + dx, cy: n.y + n.h / 2 + 12, r: 2.8, fill: BLUE, opacity: animate ? 1 : 0.5 },
+          animate ? h('animate', { attributeName: 'opacity', values: '0.15;1;0.15', dur: '1.2s', begin: `${i * 0.4}s`, repeatCount: 'indefinite' }) : null)));
+      }
+    });
+    const overlayLayer = h('svg', { width: W, height: H, style: { position: 'absolute', left: 0, top: 0, overflow: 'visible', pointerEvents: 'none' } }, ...ov);
+    const live = p.live !== false;
+    const liveDot = h('svg', { width: 6, height: 6, style: { display: 'block', flex: 'none' } }, h('circle', { cx: 3, cy: 3, r: 3, fill: live ? GREEN : 'rgba(255,255,255,0.3)' },
+      live ? h('animate', { attributeName: 'opacity', values: '1;0.2;1', dur: '2s', repeatCount: 'indefinite' }) : null));
+    const tk = p.ticker;
+    const tickerEl = tk ? h('div', { key: tk.id, style: { position: 'absolute', inset: 0, animation: 'ufrTick .28s ease-out', fontFamily: "'Geist Mono',monospace", fontSize: 11, color: 'rgba(255,255,255,0.58)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', lineHeight: '16px' } },
+      tk.time ? h('span', { style: { color: 'rgba(255,255,255,0.3)', marginRight: 10 } }, tk.time) : null,
+      tk.agent ? h('span', { style: { color: 'rgba(120,160,255,0.85)', marginRight: 8 } }, tk.agent) : null,
+      h('span', { style: { color: tk.tone === 'red' ? '#f87171' : tk.tone === 'amber' ? '#fbbf24' : 'rgba(255,255,255,0.62)' } }, tk.text)) : null;
+    const metricsView = (p.metrics || []).map(m => ({ label: m.label, value: m.value, color: m.tone === 'red' ? '#f87171' : m.tone === 'blue' ? '#6d9bff' : m.tone === 'amber' ? '#fbbf24' : 'rgba(255,255,255,0.8)' }));
+    const zoomTo = (z, cxp, cyp) => {
+      z = Math.max(1, Math.min(2.6, z)); if (z === 1) return this.setState({ zoom: 1, px: 0, py: 0 });
+      const cur = this.state.zoom === 1 ? { px, py } : { px: this.state.px, py: this.state.py };
+      const cx0 = cxp ?? cw / 2, cy0 = cyp ?? viewH / 2; const sOld = s0 * this.state.zoom, sNew = s0 * z;
+      const lx = (cx0 - cur.px) / sOld, ly = (cy0 - cur.py) / sOld;
+      this.setState({ zoom: z, px: cx0 - lx * sNew, py: cy0 - ly * sNew });
+    };
+    const focusNode = sel && map[sel];
+    return {
+      title: p.title || 'AGENT RUN GRAPH · LIVE', headerRight: p.headerRight || '',
+      showHeader: p.showHeader !== false, showTicker: p.showTicker !== false && !!p.ticker, showFooter: p.showFooter !== false && !!(p.metrics && p.metrics.length),
+      showControls: !!p.showControls, liveDot, W, H, viewH,
+      transform: `translate(${px}px, ${py}px) scale(${s})`, tx: this.state.drag ? 'none' : 'transform .35s cubic-bezier(.2,.7,.2,1)',
+      cursor: this.state.zoom > 1 ? (this.state.drag ? 'grabbing' : 'grab') : 'default',
+      edgeLayer, overlayLayer, nodes, tickerEl, metricsView, metricsRight: p.metricsRight || [],
+      wrapRef: this.wrapRef,
+      focusColor: focusNode ? 'rgba(120,160,255,0.95)' : 'rgba(255,255,255,0.3)',
+      zoomIn: () => zoomTo(this.state.zoom * 1.3), zoomOut: () => zoomTo(this.state.zoom / 1.3), fit: () => this.setState({ zoom: 1, px: 0, py: 0 }),
+      focus: () => { if (!focusNode) return; const z = 1.7, sn = s0 * z; this.setState({ zoom: z, px: cw / 2 - (focusNode.x + focusNode.w / 2 + 120) * sn, py: viewH / 2 - (focusNode.y + focusNode.h / 2) * sn }); },
+      onDown: (e) => { this.dragged = false; if (this.state.zoom === 1) return; this.setState({ drag: { x: e.clientX, y: e.clientY, px: this.state.px, py: this.state.py } }); },
+      onMove: (e) => { const d = this.state.drag; if (!d) return; const dx = e.clientX - d.x, dy = e.clientY - d.y; if (Math.abs(dx) + Math.abs(dy) > 3) this.dragged = true; this.setState({ px: d.px + dx, py: d.py + dy }); },
+      onUp: () => { if (this.state.drag) this.setState({ drag: null }); setTimeout(() => { this.dragged = false; }, 0); },
+      onWheel: (e) => { if (!p.showControls || !(e.ctrlKey || e.metaKey)) return; const r = this.wrapRef.current.getBoundingClientRect(); zoomTo(this.state.zoom * (e.deltaY < 0 ? 1.12 : 1 / 1.12), e.clientX - r.left, e.clientY - r.top); },
+    };
+  }
+}
+</script>
+</body>
+</html>
