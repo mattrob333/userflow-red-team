@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "status": "configuration-only-not-a-running-backend",
+  "runtime": "claude-agent-sdk",
+  "sdkPackage": "@anthropic-ai/claude-agent-sdk",
+  "sdkVersion": null,
+  "coordinatorModel": "claude-opus-5-5",
+  "subagentModel": "claude-opus-5-5",
+  "modelReferenceVerifiedAt": "2026-09-28",
+  "accountModelAccessVerified": false,
+  "allowSilentModelFallback": false,
+  "maxActivePersonas": 3,
+  "maxSpawnDepth": 1,
+  "maxQueryTurns": 60,
+  "maxQueryBudgetUsd": 10,
+  "maxRunBudgetUsd": 25,
+  "maxRunSeconds": 1800,
+  "authentication": "api-credential-reference",
+  "auditSourceWrites": false,
+  "remediationRequiresSeparateApproval": true,
+  "defaultBranchWrites": false,
+  "personaTools": ["mcp__userflow__read_source","mcp__userflow__browser_action","mcp__userflow__capture_evidence","mcp__userflow__record_finding","mcp__userflow__finish_journey","mcp__userflow__request_operator"]
+}
