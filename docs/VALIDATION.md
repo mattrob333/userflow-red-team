@@ -26,16 +26,16 @@ All 3 supplied `.dc.html` files match their recorded SHA-256 hashes; total origi
 - Claude SDK installation, Anthropic account/model access, any paid model call, or real subagent execution.
 - Real browser audit of a customer app; preflight regression used --no-browser with temporary fake data.
 - Authentication, encryption/vault, multi-tenant permissions, sandbox/SSRF safety, durable jobs, live event delivery, production export.
-- GitHub repository creation, file push, pull request, deployment, or CI.
+- Pull request, deployment, or CI execution. Repository publication itself is now verified separately.
 - Resolution of application bugs or real before/after evidence.
 
 The credential-pattern scan is heuristic and checks common token/private-key patterns in repository text. Passing is not a comprehensive secret audit. Original images were not OCR-scanned. No font binaries or live API credentials were intentionally included.
 
 ## Publication status
 
-Authenticated GitHub account lookup returned `mattrob333`. A lookup of `mattrob333/userflow-red-team` returned 404. The discovered connected actions include writes to existing repos but no repository-create action. The preparation container had no GitHub CLI binary or GH_TOKEN/GITHUB_TOKEN. Therefore no remote was created or pushed here.
+The canonical repository now exists at `mattrob333/userflow-red-team`. The connected GitHub account has admin and push permission, and the repository contents on `main` were verified after publication.
 
-Use the provided publisher from an authenticated developer machine, or supply an accessible existing repository for a read/compare/integration cycle. Do not claim publication from this local validation record.
+Publication does not validate the hosted product. The implementation, model calls, browser worker, authentication, sandboxing, CI, deployment, and end-to-end audit loop still require the build gates documented elsewhere in this repository.
 
 ## Updating this record
 
