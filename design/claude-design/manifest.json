@@ -1,0 +1,17 @@
+{
+  "bundleVersion": "2.2.0",
+  "recordedAt": "2026-09-28",
+  "releaseType": "design-and-build-foundation",
+  "inputs": [
+    {"path":"design/claude-design/UserFlow Red Team.dc.html","originalName":"UserFlow Red Team.dc.html","sha256":"8d1ac848a4c98187386ccab5d49ee5ac4342e2e790f0492777a47ebe9fb888a1","bytes":266301,"status":"original-unmodified"},
+    {"path":"design/claude-design/AgentRunGraph.dc.html","originalName":"AgentRunGraph.dc.html","sha256":"cd52e17c28eebeecbbe65c2b5454313d0c03f92027e644cd34b5b6fd0dec2d20","bytes":22804,"status":"original-unmodified"},
+    {"path":"design/claude-design/ScreenshotPreview.dc.html","originalName":"ScreenshotPreview.dc.html","sha256":"5cce45a10160513ffe48b709317b4bcc2c8527255d91c18b567dec838626447a","bytes":7557,"status":"original-unmodified"}
+  ],
+  "upstreamPackage":{"file":"userflow-red-team-v2.1-shareable.zip","sha256":"3892a8e93f24b210e21bcd20b10e25f89ade066fedf0a21b0be98d97bafdda2e","importedLocalCommit":"50207bc"},
+  "expectedMissingFiles":[
+    {"path":"design/claude-design/support.js","referencedBy":["design/claude-design/UserFlow Red Team.dc.html","design/claude-design/AgentRunGraph.dc.html","design/claude-design/ScreenshotPreview.dc.html"],"purpose":"Claude Design runtime (DCLogic, x-dc templates and component imports); not supplied"},
+    {"path":"design/claude-design/data.js","referencedBy":["design/claude-design/UserFlow Red Team.dc.html"],"purpose":"Demo fixtures, projection and layout functions; not supplied","referencedExports":["ANALYSIS_END","ANALYSIS_STAGES","COVERAGE","COVERAGE_COLS","DIFFS","DISCOVERIES","EVENTS","FINDINGS","FINDING_MAP","INTEGRATIONS","JOURNEY_TOTAL","PERSONAS","PHASES","PROJECTS","REPORT_SECTIONS","RETEST","ROOT_CAUSES","RUNS","RUN_END","SEV_ORDER","WB_END","WB_STEPS","WORKSTREAMS","fmt","layoutAnalysis","layoutRun","layoutWorkbench","projectRun"]}
+  ],
+  "standalonePrototypeVerified": false,
+  "productionAppImplemented": false
+}
