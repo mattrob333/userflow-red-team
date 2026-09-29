@@ -29,7 +29,7 @@ Do not interpret dates, identities, domains, repo SHAs, screenshots, provider st
 - No React application manifest, real login, API server, persistence layer, vault, job queue, or deployed app exists.
 - A pure configuration helper generates persona agent definitions with explicit Opus 5.5 models and tool names. It does not call Anthropic.
 - Repository validation commands and regression tests exist. See `VALIDATION.md` for execution results.
-- The intended GitHub destination is `mattrob333/userflow-red-team`; remote publication remains unverified until the publisher succeeds.
+- The canonical GitHub repository is `mattrob333/userflow-red-team` and is published on `main`.
 
 ## Next implementation session
 
