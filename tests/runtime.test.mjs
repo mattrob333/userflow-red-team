@@ -1,0 +1,17 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { buildAgentDefinitions, readRuntimeProfile, sdkLimitEnvironment } from "../runtime/build-agent-definitions.mjs";
+const persona=(id="A01")=>({id,name:"First-time user",role:"Client",goal:"Submit a test request",journeys:[{id:`${id}-J1`,goal:"Finish onboarding"}]});
+test("runtime profile explicitly chooses Claude Agent SDK and Opus 5.5",()=>{ const p=readRuntimeProfile();assert.equal(p.runtime,"claude-agent-sdk");assert.equal(p.coordinatorModel,"claude-opus-5-5");assert.equal(p.subagentModel,"claude-opus-5-5");assert.equal(p.sdkVersion,null); });
+test("no silent fallback or default-branch writes",()=>{ const p=readRuntimeProfile();assert.equal(p.allowSilentModelFallback,false);assert.equal(p.defaultBranchWrites,false);assert.equal(p.remediationRequiresSeparateApproval,true);assert.equal(p.accountModelAccessVerified,false); });
+test("all persona definitions use explicit model and bounded turns",()=>{ const d=buildAgentDefinitions([persona(),persona("A02")]);assert.equal(Object.keys(d).length,2); for(const a of Object.values(d)){assert.equal(a.model,"claude-opus-5-5");assert.equal(a.maxTurns,60);assert.ok(a.prompt.includes("Record each journey outcome"));} });
+test("persona tools do not grant Bash, source edits, or child delegation",()=>{ const d=buildAgentDefinitions([persona()]);for(const tool of d["persona-a01"].tools){assert.ok(tool.startsWith("mcp__userflow__"));assert.ok(!["Bash","Edit","Write","Agent"].includes(tool));} });
+test("SDK native limits are explicit strings",()=>{ assert.deepEqual(sdkLimitEnvironment(),{CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH:"1",CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS:"3"}); });
+test("invalid depth/concurrency rejected",()=>{ assert.throws(()=>sdkLimitEnvironment({maxSpawnDepth:0,maxActivePersonas:3}));assert.throws(()=>sdkLimitEnvironment({maxSpawnDepth:1,maxActivePersonas:Infinity})); });
+test("empty persona plan rejected",()=>assert.throws(()=>buildAgentDefinitions([])));
+test("duplicate and unsafe persona IDs rejected",()=>{ assert.throws(()=>buildAgentDefinitions([persona(),persona("a01")]));assert.throws(()=>buildAgentDefinitions([persona("../A1")])); });
+test("blank goals and journeys rejected",()=>{ assert.throws(()=>buildAgentDefinitions([{...persona(),goal:" "}]));assert.throws(()=>buildAgentDefinitions([{...persona(),journeys:[]}])); });
+test("journey IDs must be unique across the plan",()=>{ assert.throws(()=>buildAgentDefinitions([persona(),{...persona("A02"),journeys:persona().journeys}])); });
+test("model aliases cannot silently inherit a provider tier",()=>{ for(const model of ["inherit","opus","sonnet","haiku",""]){assert.throws(()=>buildAgentDefinitions([persona()],{model}));} });
+test("only explicitly selected task fields enter agent prompt",()=>{ const d=buildAgentDefinitions([{...persona(),apiKey:"FAKE_CANARY_DO_NOT_INCLUDE",hooks:"malicious"}]); assert.ok(!JSON.stringify(d).includes("FAKE_CANARY_DO_NOT_INCLUDE"));assert.ok(!JSON.stringify(d).includes("malicious")); });
+test("whole-run budget is finite and not below per-query budget",()=>{ const p=readRuntimeProfile();for(const x of [p.maxQueryTurns,p.maxQueryBudgetUsd,p.maxRunBudgetUsd,p.maxRunSeconds])assert.ok(Number.isFinite(x)&&x>0);assert.ok(p.maxRunBudgetUsd>=p.maxQueryBudgetUsd); });
